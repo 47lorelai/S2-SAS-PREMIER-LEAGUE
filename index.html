@@ -100,12 +100,28 @@ function completed(m){
     &&!isNaN(Number(m.hs))&&!isNaN(Number(m.as));
 }
 function officialFixtures(){
-  const byKey=new Map(rows.map(normalize).map(m=>[`${m.md}|${m.home}|${m.away}`,m]));
+  // Google Sheet is the source for scores, while OFFICIAL_FIXTURES fixes
+  // the exact league order used on the GitHub pages.
+  const byPair=new Map(
+    rows.map(normalize).map(m=>[
+      `${String(m.home).trim().toUpperCase()}|${String(m.away).trim().toUpperCase()}`,m
+    ])
+  );
   return OFFICIAL_FIXTURES.map(f=>{
-    const key=`${f[0]}|${f[1]}|${f[2]}`;
-    const m=byKey.get(key);
-    return m ? m : {md:f[0],home:f[1],away:f[2],hs:"",as:""};
+    const key=`${f[1].trim().toUpperCase()}|${f[2].trim().toUpperCase()}`;
+    const m=byPair.get(key);
+    return m
+      ? {md:f[0],home:f[1],away:f[2],hs:m.hs,as:m.as}
+      : {md:f[0],home:f[1],away:f[2],hs:"",as:""};
   });
+}
+
+function latestCompletedResult(){
+  const matches=officialFixtures();
+  for(let i=matches.length-1;i>=0;i--){
+    if(completed(matches[i])) return matches[i];
+  }
+  return null;
 }
 
 function fallbackStandings(){
@@ -147,6 +163,7 @@ function render(){
   const matches=officialFixtures();
   const played=matches.filter(completed);
   const next=matches.find(m=>!completed(m));
+    const latest=latestCompletedResult();
   const goals=played.reduce((n,m)=>n+Number(m.hs)+Number(m.as),0);
 
   let content="";
