@@ -100,12 +100,34 @@ function completed(m){
     &&!isNaN(Number(m.hs))&&!isNaN(Number(m.as));
 }
 function officialFixtures(){
-  const byKey=new Map(rows.map(normalize).map(m=>[`${m.md}|${m.home}|${m.away}`,m]));
-  return OFFICIAL_FIXTURES.map(f=>{
-    const key=`${f[0]}|${f[1]}|${f[2]}`;
-    const m=byKey.get(key);
-    return m ? m : {md:f[0],home:f[1],away:f[2],hs:"",as:""};
+  const live = Array.isArray(resultRows) ? resultRows : [];
+
+  // Keep the exact Google Sheet fixture order used by the league.
+  return OFFICIAL_FIXTURES.map((f, i) => {
+    const found = live.find(r =>
+      String(r.home || '').trim().toUpperCase() === f.home.toUpperCase() &&
+      String(r.away || '').trim().toUpperCase() === f.away.toUpperCase()
+    );
+
+    return {
+      md: f.md,
+      home: f.home,
+      away: f.away,
+      hs: found && found.hs !== '' ? found.hs : '',
+      as: found && found.as !== '' ? found.as : '',
+      played: !!(found && found.hs !== '' && found.as !== '')
+    };
   });
+}
+
+function latestCompletedResult(){
+  const fixtures = officialFixtures();
+  // "Latest" follows the Google Sheet/official fixture sequence,
+  // not the order in which rows happen to be returned by the API.
+  for(let i = fixtures.length - 1; i >= 0; i--){
+    if(fixtures[i].played) return fixtures[i];
+  }
+  return null;
 }
 
 function fallbackStandings(){
