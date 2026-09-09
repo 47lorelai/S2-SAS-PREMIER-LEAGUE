@@ -27,7 +27,9 @@
 <main id="app"></main>
 <footer><strong>SAS PREMIER LEAGUE SEASON 2</strong><span>⚽ Bola • Persahabatan • Kita • Bersama</span><span>© 2026</span></footer>
 <script>
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRo7Dq0F36firHtLRt8zSNvMMeuewxiaSu7iCPpiSyQFtWI6WpUhxMZrXfa2-cqcU6nuZrYmSIht4Cc/pub?gid=1580015281&single=true&output=csv';
+const SHEET_ID = '11Gei543GpeBvto9r85b47w1Apa88btyCfYAoVaafU1U';
+const RESULTS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=RESULTS`;
+const SCOREBOARD_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=SCOREBOARD`;
 const TEAMS = ["SAS FC","SABAH FC","LANGGAR FC","TANGKI FC","T-REX NAZARIO"];
 const LOGOS = {
  "SAS FC":"assets/teams/sas-fc.png",
@@ -37,18 +39,18 @@ const LOGOS = {
  "T-REX NAZARIO":"assets/teams/trex-nazario.png"
 };
 const FIXTURES = [
-  ["MD1", "SAS FC", "SABAH FC"], ["MD1", "LANGGAR FC", "TANGKI FC"],
-  ["MD2", "T-REX NAZARIO", "SAS FC"], ["MD2", "SABAH FC", "LANGGAR FC"],
-  ["MD3", "TANGKI FC", "T-REX NAZARIO"], ["MD3", "SAS FC", "LANGGAR FC"],
-  ["MD4", "SABAH FC", "TANGKI FC"], ["MD4", "LANGGAR FC", "T-REX NAZARIO"],
-  ["MD5", "TANGKI FC", "SAS FC"], ["MD5", "T-REX NAZARIO", "SABAH FC"],
-  ["MD6", "SABAH FC", "SAS FC"], ["MD6", "TANGKI FC", "LANGGAR FC"],
-  ["MD7", "SAS FC", "T-REX NAZARIO"], ["MD7", "LANGGAR FC", "SABAH FC"],
-  ["MD8", "T-REX NAZARIO", "TANGKI FC"], ["MD8", "LANGGAR FC", "SAS FC"],
-  ["MD9", "TANGKI FC", "SABAH FC"], ["MD9", "T-REX NAZARIO", "LANGGAR FC"],
-  ["MD10", "SAS FC", "TANGKI FC"], ["MD10", "SABAH FC", "T-REX NAZARIO"]
+  ["MD1", "SAS FC", "TANGKI FC"], ["MD1", "SABAH FC", "LANGGAR FC"],
+  ["MD2", "LANGGAR FC", "SAS FC"], ["MD2", "T-REX NAZARIO", "TANGKI FC"],
+  ["MD3", "SAS FC", "SABAH FC"], ["MD3", "LANGGAR FC", "T-REX NAZARIO"],
+  ["MD4", "TANGKI FC", "SABAH FC"], ["MD4", "T-REX NAZARIO", "SAS FC"],
+  ["MD5", "SABAH FC", "T-REX NAZARIO"], ["MD5", "TANGKI FC", "LANGGAR FC"],
+  ["MD6", "TANGKI FC", "SAS FC"], ["MD6", "LANGGAR FC", "SABAH FC"],
+  ["MD7", "SAS FC", "LANGGAR FC"], ["MD7", "TANGKI FC", "T-REX NAZARIO"],
+  ["MD8", "SABAH FC", "SAS FC"], ["MD8", "T-REX NAZARIO", "LANGGAR FC"],
+  ["MD9", "SABAH FC", "TANGKI FC"], ["MD9", "SAS FC", "T-REX NAZARIO"],
+  ["MD10", "T-REX NAZARIO", "SABAH FC"], ["MD10", "LANGGAR FC", "TANGKI FC"]
 ];
-let rows=[], page="home";
+let rows=[], scoreRows=[], page="home";
 
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 function logo(t){return `<img class="logo" src="${LOGOS[t]}" alt="">`;}
@@ -84,7 +86,7 @@ function fixtureCard(f){
 function render(){
  document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
  document.body.dataset.page=page;
- const s=standings(), played=rows.map(normalize).filter(completed), next=FIXTURES.find(f=>!played.some(m=>m.home===f[1]&&m.away===f[2]));
+ const s=sheetStandings()||standings(), played=rows.map(normalize).filter(completed), next=FIXTURES.find(f=>!played.some(m=>m.home===f[1]&&m.away===f[2]));
  let content="";
  if(page==="home"){
   const top=s[0], nextF=next||FIXTURES[0];
@@ -99,7 +101,7 @@ function render(){
   ${card("🏆 SAS PREMIER LEAGUE SEASON 2",`<div class="tablewrap"><table><thead><tr><th>#</th><th>TEAM</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th></tr></thead><tbody>${s.map((x,i)=>`<tr><td><span class="rank">${i+1}</span></td><td class="teamcell">${logo(x.t)}<b>${x.t}</b></td><td>${x.mp}</td><td>${x.w}</td><td>${x.d}</td><td>${x.l}</td><td>${x.gf}</td><td>${x.ga}</td><td>${x.gf-x.ga}</td><td><strong>${x.pts}</strong></td></tr>`).join("")}</tbody></table></div>`)}
   <div class="notice">🔄 Data dibaca terus daripada Google Sheets. Skor hanya dikira selepas kedua-dua ruang skor diisi.</div>`;
  } else if(page==="fixtures"){
-  content=`<div class="pagehead"><div><span class="eyebrow">20 MATCHES</span><h1>Fixtures</h1><p>Double round-robin • 10 matchdays</p></div></div><div class="fixturegrid">${FIXTURES.map(f=>fixtureCard(f)).join("")}</div>`;
+  content=`<div class="pagehead"><div><span class="eyebrow">20 MATCHES</span><h1>Fixtures</h1><p>Double round-robin • 10 matchdays • 8 perlawanan setiap pasukan (4 home + 4 away)</p></div></div><div class="fixturegrid">${FIXTURES.map(f=>fixtureCard(f)).join("")}</div>`;
  } else if(page==="results"){
   content=`<div class="pagehead"><div><span class="eyebrow">LIVE RESULTS</span><h1>Results</h1><p>Keputusan yang telah dimasukkan oleh admin</p></div></div><div class="resultsgrid">${played.reverse().map(m=>`<div class="resultBig"><span>${m.md}</span><div>${logo(m.home)}<b>${m.home}</b></div><strong>${m.hs}<small> - </small>${m.as}</strong><div>${logo(m.away)}<b>${m.away}</b></div></div>`).join("")||`<div class="empty">Belum ada keputusan.</div>`}</div>`;
  } else if(page==="teams"){
@@ -119,11 +121,16 @@ function render(){
 }
 async function load(){
  try{
-  const res=await fetch(SHEET_URL+"&t="+Date.now(),{cache:"no-store"});
-  rows=parseCSV(await res.text()).slice(1);
-  document.getElementById("last").textContent="LIVE • "+new Date().toLocaleTimeString("ms-MY",{hour:"2-digit",minute:"2-digit"});
- }catch(e){document.getElementById("last").textContent="OFFLINE / SEMAK SHEET";}
- render();
+   const [resultsRes,scoreboardRes]=await Promise.all([
+     fetch(RESULTS_URL+"&t="+Date.now(),{cache:"no-store"}),
+     fetch(SCOREBOARD_URL+"&t="+Date.now(),{cache:"no-store"})
+   ]);
+   if(!resultsRes.ok) throw new Error("RESULTS fetch failed");
+   rows=parseCSV(await resultsRes.text()).slice(1);
+   scoreRows=scoreboardRes.ok ? parseCSV(await scoreboardRes.text()).slice(1) : [];
+   document.getElementById("last").textContent="LIVE • "+new Date().toLocaleTimeString("ms-MY",{hour:"2-digit",minute:"2-digit"});
+  }catch(e){document.getElementById("last").textContent="OFFLINE / SEMAK SHEET";}
+  render();
 }
 document.getElementById("hamb").onclick=()=>document.getElementById("nav").classList.toggle("open");
 load(); setInterval(load,30000);
