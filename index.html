@@ -139,7 +139,21 @@ function fallbackStandings(){
 }
 function standings(){
   const s=scoreRows.map(normalizeScore).filter(x=>x.t);
-  return s.length===TEAMS.length ? s : fallbackStandings();
+
+  if(s.length===TEAMS.length){
+    // Jangan bergantung kepada kolum POS atau susunan row SCOREBOARD.
+    // Ranking dikira semula berdasarkan mata → GD → GF.
+    s.sort((a,b)=>
+      b.pts-a.pts ||
+      b.gd-a.gd ||
+      b.gf-a.gf ||
+      b.w-a.w ||
+      a.t.localeCompare(b.t)
+    );
+    return s.map((x,i)=>({...x,pos:i+1}));
+  }
+
+  return fallbackStandings().map((x,i)=>({...x,pos:i+1}));
 }
 function card(title,body,cls=""){
   return `<section class="card ${cls}"><h2>${title}</h2>${body}</section>`;
@@ -205,7 +219,7 @@ function render(){
         <th>#</th><th>TEAM</th><th>MP</th><th>W</th><th>D</th><th>L</th>
         <th>GF</th><th>GA</th><th>GD</th><th>PTS</th>
       </tr></thead><tbody>${s.map((x,i)=>`
-        <tr><td><span class="rank">${esc(x.pos || i+1)}</span></td>
+        <tr><td><span class="rank">${i+1}</span></td>
         <td class="teamcell">${logo(x.t)}<b>${esc(x.t)}</b></td>
         <td>${x.mp}</td><td>${x.w}</td><td>${x.d}</td><td>${x.l}</td>
         <td>${x.gf}</td><td>${x.ga}</td><td>${x.gd}</td><td><strong>${x.pts}</strong></td></tr>
