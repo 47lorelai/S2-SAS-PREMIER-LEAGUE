@@ -534,3 +534,195 @@ footer{background:linear-gradient(180deg,transparent,#02070d88)}
   .statbox{min-height:118px;padding:13px}
   .statbox b{font-size:32px}
 }
+
+
+/* =========================================================
+   FIXTURES — FULL SCORE + HOME / AWAY
+   ========================================================= */
+
+.fixture{
+  display:block;
+  padding:13px;
+}
+
+.fixtureMeta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:10px;
+}
+
+.fixtureStatus{
+  display:inline-flex;
+  align-items:center;
+  min-height:22px;
+  padding:3px 8px;
+  border-radius:999px;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:1px;
+  background:#ffffff09;
+  border:1px solid #ffffff12;
+  color:#9fb1bf;
+}
+
+.fixturePlayed .fixtureStatus{
+  color:#7ff0b0;
+  border-color:#32db8644;
+  background:#32db8610;
+}
+
+.fixtureTeams{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 72px minmax(0,1fr);
+  align-items:center;
+  gap:10px;
+}
+
+.fixture .team{
+  min-width:0;
+  position:relative;
+  text-align:center;
+  padding:6px;
+  border-radius:12px;
+}
+
+.fixture .team .logo{
+  width:60px;
+  height:60px;
+  display:block;
+  margin:6px auto 7px;
+}
+
+.fixture .team b{
+  display:block;
+  font-size:12px;
+  line-height:1.2;
+  overflow-wrap:anywhere;
+}
+
+.venue{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:21px;
+  padding:3px 7px;
+  border-radius:999px;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.8px;
+}
+
+.homeVenue{
+  color:#f5c34d;
+  background:#f5c34d12;
+  border:1px solid #f5c34d35;
+}
+
+.awayVenue{
+  color:#7ec5ff;
+  background:#1678d112;
+  border:1px solid #1678d135;
+}
+
+.fixtureScore{
+  text-align:center;
+}
+
+.fixtureScore>strong{
+  display:block;
+  color:#f4c24d;
+  font-size:23px;
+  line-height:1;
+  white-space:nowrap;
+}
+
+.fixtureScore small{
+  color:#8194a2;
+  font-size:13px;
+}
+
+.teamScore{
+  display:none;
+}
+
+/* Played cards get a subtle visual distinction. */
+.fixturePlayed{
+  border-color:#32db8625;
+}
+
+.fixtureUpcoming{
+  border-color:#3aa2ff22;
+}
+
+@media(max-width:720px){
+  .fixture{
+    padding:10px 7px;
+    min-height:142px;
+  }
+
+  .fixtureMeta{
+    margin-bottom:7px;
+  }
+
+  .fixtureStatus{
+    font-size:7px;
+    min-height:20px;
+    padding:2px 7px;
+  }
+
+  .fixtureTeams{
+    grid-template-columns:minmax(0,1fr) 50px minmax(0,1fr);
+    gap:3px;
+  }
+
+  .fixture .team{
+    padding:4px 2px;
+  }
+
+  .fixture .team .logo{
+    width:48px;
+    height:48px;
+    margin:5px auto 5px;
+  }
+
+  .fixture .team b{
+    font-size:10px;
+  }
+
+  .venue{
+    min-height:19px;
+    padding:2px 5px;
+    font-size:7px;
+    letter-spacing:.5px;
+  }
+
+  .fixtureScore>strong{
+    font-size:19px;
+  }
+
+  .fixtureScore small{
+    font-size:10px;
+  }
+}
+
+@media(max-width:380px){
+  .fixtureTeams{
+    grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr);
+  }
+
+  .fixture .team .logo{
+    width:44px;
+    height:44px;
+  }
+
+  .venue{
+    font-size:6.5px;
+    padding:2px 4px;
+  }
+
+  .fixtureScore>strong{
+    font-size:17px;
+  }
+}

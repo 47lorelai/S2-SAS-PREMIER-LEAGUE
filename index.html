@@ -167,11 +167,32 @@ function card(title,body,cls=""){
   return `<section class="card ${cls}"><h2>${title}</h2>${body}</section>`;
 }
 function fixtureCard(f,played=false){
-  return `<div class="fixture">
-    <span class="md">${esc(f.md)}</span>
-    <div class="team">${logo(f.home)}<b>${esc(f.home)}</b></div>
-    <strong>${played ? `${esc(f.hs)} - ${esc(f.as)}` : "VS"}</strong>
-    <div class="team">${logo(f.away)}<b>${esc(f.away)}</b></div>
+  const homeScore = played ? esc(f.hs) : "";
+  const awayScore = played ? esc(f.as) : "";
+  return `<div class="fixture ${played ? "fixturePlayed" : "fixtureUpcoming"}">
+    <div class="fixtureMeta">
+      <span class="md">${esc(f.md)}</span>
+      <span class="fixtureStatus">${played ? "FULL TIME" : "UPCOMING"}</span>
+    </div>
+    <div class="fixtureTeams">
+      <div class="team homeTeam">
+        <span class="venue homeVenue">🏠 HOME</span>
+        ${logo(f.home)}
+        <b>${esc(f.home)}</b>
+        ${played ? `<strong class="teamScore">${homeScore}</strong>` : ""}
+      </div>
+      <div class="fixtureScore">
+        ${played
+          ? `<strong>${homeScore} <small>—</small> ${awayScore}</strong>`
+          : `<strong>VS</strong>`}
+      </div>
+      <div class="team awayTeam">
+        <span class="venue awayVenue">✈️ AWAY</span>
+        ${logo(f.away)}
+        <b>${esc(f.away)}</b>
+        ${played ? `<strong class="teamScore">${awayScore}</strong>` : ""}
+      </div>
+    </div>
   </div>`;
 }
 function teamStats(t,s){
