@@ -179,7 +179,7 @@ function fixtureCard(f,played=false){
     </div>
     <div class="fixtureTeams">
       <div class="team homeTeam">
-        <span class="venue homeVenue">🏠 HOME</span>
+        <span class="venue homeVenue">🏟️ HOME</span>
         ${logo(f.home)}
         <b>${esc(f.home)}</b>
         ${played ? `<strong class="teamScore">${homeScore}</strong>` : ""}
@@ -293,7 +293,6 @@ function render(){
     <div class="teamsgrid">${TEAMS.map(t=>{
       const x=teamStats(t,s);
       return `<article class="teamcard">${logo(t)}<h2>${esc(t)}</h2>
-        <p>${t==="T-REX NAZARIO"?"Bigger • Stronger • Together":"Satu pasukan. Satu semangat."}</p>
         <small>${x.mp} MP • ${x.pts} PTS</small>
         <button data-page="table">LIHAT PRESTASI →</button>
       </article>`;

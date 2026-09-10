@@ -938,3 +938,8 @@ footer{background:linear-gradient(180deg,transparent,#02070d88)}
     right:3px;
   }
 }
+
+/* Simple venue icons: stadium = Home, plane = Away */
+.venue{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.homeVenue{color:#f5c34d}
+.awayVenue{color:#7ec5ff}
