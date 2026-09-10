@@ -37,6 +37,14 @@
   <span>© 2026</span>
 </footer>
 
+  <div class="mobileBottomNav" id="mobileBottomNav" aria-label="Navigasi mudah alih">
+    <button class="mobileNav active" data-page="home"><span>⌂</span><small>Home</small></button>
+    <button class="mobileNav" data-page="table"><span>🏆</span><small>Table</small></button>
+    <button class="mobileNav" data-page="fixtures"><span>📅</span><small>Fixtures</small></button>
+    <button class="mobileNav" data-page="results"><span>⚽</span><small>Results</small></button>
+    <button class="mobileNav" data-page="teams"><span>👥</span><small>Teams</small></button>
+  </div>
+
 <script>
 const SHEET_ID = "11Gei543GpeBvto9r85b47w1Apa88btyCfYAoVaafU1U";
 const RESULTS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=RESULTS`;
@@ -170,7 +178,7 @@ function teamStats(t,s){
   return s.find(x=>x.t===t)||{mp:0,w:0,d:0,l:0,gf:0,ga:0,gd:0,pts:0};
 }
 function render(){
-  document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+  document.querySelectorAll(".nav,.mobileNav").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
   document.body.dataset.page=page;
 
   const s=standings();
